@@ -6,6 +6,7 @@
  * Time: 19:22
  * 安网云分享接口
  */
+require_once ('cron/dbs.class.php');
 function getIp()//获取用户的IP地址，也有可能是unknown
 {
     if (getenv("HTTP_CLIENT_IP") && strcasecmp(getenv("HTTP_CLIENT_IP"), "unknown"))
@@ -18,13 +19,22 @@ function getIp()//获取用户的IP地址，也有可能是unknown
         $ip = $_SERVER['REMOTE_ADDR'];
     else
         $ip = "unknown";
+
     return $ip;
 }
-function newT($id){//添加一个分享链接
-
+function newT($username){//添加一个分享链接
+    $conn = new DBS();
+    $sql = "SELECT uid FROM `用户` WHERE `用户名` = '$username'";
+if(($respose = $conn->query($sql))!=null){
+    $uid = $respose->fetch_assoc()['uid'];
 }
-function oldT($id){//这边不知道是干嘛的.....
-
+    $uuid = $uid * 2019 - 5;//用户唯一推广链接uuid
+    $sql = "";
+}
+function oldT($username){//这边不知道是干嘛的.....
+    $conn = new DBS();
+    $sql = "SELECT uid FROM `用户` WHERE `用户名` = '$username'";
+    $conn->query($sql);
 }
 $return = array(
     'code' => 1,
@@ -33,13 +43,13 @@ $return = array(
 if(!($handle = isset($_POST['handle'])?$_POST['handle']:null) && !($handle = isset($_GET['handle'])?$_GET['handle']:null)){
     $return['msg'] = '没有选择任何操作';
 }else{
-    if(!($id = isset($_POST['id'])?$_POST['id']:null) && !($id = isset($_GET['id'])?$_GET['id']:null)){
+    if(!($$username = isset($_POST['$username'])?$_POST['$username']:null) && !($$username = isset($_GET['$username'])?$_GET['$username']:null)){
         $return['msg'] = '用户ID信息丢失';
     }else{
         if($handle == 'new'){
-            newT($id);
+            newT($username);
         }else if($handle == 'old'){
-            oldT($id);
+            oldT($username);
         }else{
             $return['msg'] = '未知的操作类型';
         }
