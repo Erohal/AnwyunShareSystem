@@ -15,15 +15,15 @@
 				border-radius: 10px;
 				box-shadow: 2px 1px 20px #B3B3B3;
 			}
+			
 			#sec-sec {
 				width: 232px;
 				height: 100px;
 				margin: 0 auto;
 				background: #fff;
 				line-height: 100px;
-
 			}
-
+			
 			#sec-sec button {
 				width: 70px;
 				display: inline-block;
@@ -31,7 +31,7 @@
 				margin-left: -5px;
 				margin-top: -3px;
 			}
-
+			
 			#sec input[name='userName'] {
 				width: 150px;
 				display: inline-block;
@@ -79,8 +79,25 @@
 			var val=$("input[name='userName']").val();
 			if(val==""){
 				layer.msg("用户名不许为空呦~");
+			}else{
+				$.ajax({
+					url:"",
+					type:"post",
+					data:{
+						User:val,
+						Type:"new"
+					},
+					success:function(data){
+						if(data.code=0){
+							layer.msg(data.msg);
+						}
+					},
+					error:function(data){
+						layer.msg("网络错误！");
+					},
+				 })
 			}
-			
 		})
+		
 	</script>
 </html>
