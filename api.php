@@ -6,7 +6,7 @@
  * Time: 19:22
  * 安网云分享接口
  */
-function getIp()
+function getIp()//获取用户的IP地址，也有可能是unknown
 {
     if (getenv("HTTP_CLIENT_IP") && strcasecmp(getenv("HTTP_CLIENT_IP"), "unknown"))
         $ip = getenv("HTTP_CLIENT_IP");
@@ -18,16 +18,26 @@ function getIp()
         $ip = $_SERVER['REMOTE_ADDR'];
     else
         $ip = "unknown";
-    return ($ip);
+    return $ip;
 }
 $return = array(
     'code' => 1,
-    'msg' => 'error'
+    'msg' => '内部错误'
 );
 if(!($handle = isset($_POST['handle'])?$_POST['handle']:null) && !($handle = isset($_GET['handle'])?$_GET['handle']:null)){
-    $return['msg'] = 'No handle is been chosen';
-}else if($handle == 'getip'){
-    $return['msg'] = getIp();
+    $return['msg'] = '没有选择任何操作';
+}else{
+    if(!($id = isset($_POST['id'])?$_POST['id']:null) && !($id = isset($_GET['id'])?$_GET['id']:null)){
+        $return['msg'] = '用户ID信息丢失';
+    }else{
+        if($handle == 'new'){
+
+        }else if($handle == 'old'){
+
+        }else{
+            $return['msg'] = '未知的操作类型';
+        }
+    }
 }
 $return = json_encode($return);
 echo $return;
