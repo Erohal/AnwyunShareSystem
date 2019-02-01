@@ -15,6 +15,7 @@
             border-radius: 10px;
             box-shadow: 2px 1px 20px #B3B3B3;
         }
+
         #sec-sec {
             width: 232px;
             height: 100px;
@@ -37,13 +38,15 @@
             display: inline-block;
             border-radius: 10px 0 0 10px;
         }
-        #foot{
+
+        #foot {
             width: 700px;
             height: 300px;
             margin: 0 auto;
             margin-top: 50px;
         }
-        #foot-text{
+
+        #foot-text {
             width: 580px;
             height: 300px;
             margin-left: 20%;
@@ -54,7 +57,7 @@
 <body bgcolor="">
 <div id="sec">
     <div id="sec-sec">
-        <input type="text" name="userName"  required lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+        <input type="text" name="userName" required lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
         <button id="scbut" type="button" class="layui-btn layui-btn-normal ">领取</button>
     </div>
 </div>
@@ -63,7 +66,7 @@
         <span>1.输入安网云登录用户名即可获得${分享者用户名}送给你的现金红包！</span><br>
         <span>2.领取后现金红包将存入你的安网云账户预存款</span><br>
         <span>3.禁止代理IP、刷注册等作弊行为，安网云不定期进行人工检查。</span><br>
-        <span>4.作弊者将直接禁封账户以及账户下所有产品不予退款。</span><br>
+        <span>4.作弊者将直接禁封账户以及账户下所有产品并不予退款。</span><br>
         <span>5.本活动解释权归安网云所有</span>
     </div>
 </div>
@@ -74,12 +77,39 @@
         var form = layui.form,
             layer = layui.layer;
     };
-    $("#scbut").click(function(){
-        var val=$("input[name='userName']").val();
-        if(val==""){
+    $("#scbut").click(function() {
+        var val = $("input[name='userName']").val();
+        if (val == "") {
             layer.msg("用户名不许为空呦~");
+        }else{
+            $.ajax({
+                url: "api.php",
+                type: "post",
+                data: {
+                    User: val,
+                    Type:"old"
+                },
+                success: function(data) {
+                    if (data.code = 0) {
+                        layer.msg(data.msg);
+                    } else if (data.code = 1) {
+                        layer.open({
+                            title: '领取成功！',
+                            content: '您的红包将直接发送至您的账户！请注意查收！<br/>另外，你也想要免费发红包吗？',
+                            btn:['是','否'],
+                            yes: function(){
+                                alert("是");
+                                window.location.href="index.html";
+                                layer.closeAll();
+                            },
+                        });
+                    }
+                },
+                error: function(data) {
+                    layer.msg("网络错误！");
+                },
+            })
         }
-
     })
 </script>
 </html>
