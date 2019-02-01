@@ -20,6 +20,12 @@ function getIp()//获取用户的IP地址，也有可能是unknown
         $ip = "unknown";
     return $ip;
 }
+function newT($id){//添加一个分享链接
+
+}
+function oldT($id){//这边不知道是干嘛的.....
+
+}
 $return = array(
     'code' => 1,
     'msg' => '内部错误'
@@ -31,9 +37,9 @@ if(!($handle = isset($_POST['handle'])?$_POST['handle']:null) && !($handle = iss
         $return['msg'] = '用户ID信息丢失';
     }else{
         if($handle == 'new'){
-
+            newT($id);
         }else if($handle == 'old'){
-
+            oldT($id);
         }else{
             $return['msg'] = '未知的操作类型';
         }
