@@ -10,9 +10,10 @@ class DBS{
     private $host = 'localhost';
     private $user = 'root';
     private $pwd = '';
-    private $db = 'test';
+    private $db = 'ptest';
     function __construct(){
         $this->conn = new mysqli($this->host,$this->user,$this->pwd,$this->db);
+        $this->conn->query('SET NAMES utf8');//设置使用utf8格式编码
         if(!$this->conn->connect_error){
             echo $this->conn->connect_error;
         }
@@ -33,5 +34,8 @@ class DBS{
     }
     public function error(){
         return $this -> conn -> error();
+    }
+    public function getBody(){
+        return $this -> conn;
     }
 }

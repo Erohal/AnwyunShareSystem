@@ -11,18 +11,17 @@ $return = array(
     ,'msg' => '内部错误'
 );
 require_once ('cron/dbs.class.php');
-$conn = new DBS();
 function handleT($handle,$username){
     global $return;//使用到了$return全局变量
     $uid = null;
-    global $conn;//引入conn对象
+    $conn = new DBS();
     $sql = "SELECT * FROM `用户` WHERE `用户名` = '$username'";
     if(($response = $conn->query($sql)->fetch_assoc())!=null){//用户存在的情况下
         $uid = $response['uid'];
         $uuid = $uid * 2019 - 5;//处理得到uuid
         if($handle == 'new'){//添加邀请链接操作
             $sql = "SELECT * FROM `share` WHERE username='$username'";
-            if(($share = $conn->query($sql))!=null){//用户已经生成红包
+            if(($share = $conn->query($sql)->fetch_assoc())!=null){//用户已经生成红包
                 $return['msg'] = '你已经生成了分享链接';
             }else{//用户第一次操作
                 //写数据库操作
