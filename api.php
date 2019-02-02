@@ -41,8 +41,8 @@ function handleT($handle,$username){
         $return['msg'] = '用户不存在';
     }
 }
-$username = isset($_POST['username'])?$_POST['username']:null;
-$handle = isset($_POST['type'])?$_POST['type']:null;
+$username = isset($_POST['User'])?$_POST['User']:null;
+$handle = isset($_POST['Type'])?$_POST['Type']:null;
 if($username && $handle){
     if($handle == 'new' && $handle == 'old'){
         handleT($handle,$username);
