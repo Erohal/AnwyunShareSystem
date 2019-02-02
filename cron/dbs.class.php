@@ -10,7 +10,7 @@ class DBS{
     private $host = 'localhost';
     private $user = 'root';
     private $pwd = '';
-    private $db = 'listenenglish';
+    private $db = 'test';
     function __construct(){
         $this->conn = new mysqli($this->host,$this->user,$this->pwd,$this->db);
         if(!$this->conn->connect_error){

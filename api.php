@@ -11,13 +11,14 @@ $return = array(
     ,'msg' => '内部错误'
 );
 require_once ('cron/dbs.class.php');
+$conn = new DBS();
 function handleT($handle,$username){
     global $return;//使用到了$return全局变量
     $uid = null;
-    $conn = new DBS();
-    $sql = "SELECT uid FROM `用户` WHERE `用户名` = '$username'";
-    if(($response = $conn->query($sql))!=null){//用户存在的情况下
-        $uid = $response->fetch_assoc()['uid'];
+    global $conn;//引入conn对象
+    $sql = "SELECT * FROM `用户` WHERE `用户名` = '$username'";
+    if(($response = $conn->query($sql)->fetch_assoc())!=null){//用户存在的情况下
+        $uid = $response['uid'];
         $uuid = $uid * 2019 - 5;//处理得到uuid
         if($handle == 'new'){//添加邀请链接操作
             $sql = "SELECT * FROM `share` WHERE username='$username'";
@@ -44,7 +45,7 @@ function handleT($handle,$username){
 $username = isset($_POST['User'])?$_POST['User']:null;
 $handle = isset($_POST['Type'])?$_POST['Type']:null;
 if($username && $handle){
-    if($handle == 'new' && $handle == 'old'){
+    if($handle == 'new' || $handle == 'old'){
         handleT($handle,$username);
     }else{
         $return['msg'] = '参数名称不正确';
