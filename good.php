@@ -78,9 +78,21 @@ if(($uuid && $response = $conn->query($sql)->fetch_assoc())!=null){
         #queryBut a:hover{
             box-shadow: 0px 0px 0px #B3B3B3;
         }
+		#head{
+			width:100%;
+			margin-top: 15%;
+			text-align: center;
+			font-size: 20px;
+			color:#1E9FFF ;
+		}
     </style>
 </head>
 <body bgcolor="">
+	<div id="head">
+		<span id="title">
+			这是一个来自<?php echo $Dusername; ?>的现金红包！
+		</span>
+	</div>
 <div id="sec">
     <div id="sec-sec">
         <input type="text" name="userName" required lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
