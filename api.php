@@ -25,7 +25,7 @@ function handleT($handle,$username){
                 $return['msg'] = '你已经生成了分享链接';
             }else{//用户第一次操作
                 //写数据库操作
-                $sql = "INSERT INTO `share`(`uid`, `username`, `uuid`, `successn`) VALUES ($uid,'$username',$uuid,0)";
+                $sql = "INSERT INTO `share`(`uid`, `username`, `uuid`, `successn`,`mtime`) VALUES ($uid,'$username',$uuid,0,now())";
                 if($conn->query($sql)){//如果sql命令执行成功
                     $url=dirname('http://'.$_SERVER['SERVER_NAME'].$_SERVER["REQUEST_URI"]);//这里可能会出错，到时候再来调试
                     $return['code'] = 1;
@@ -34,8 +34,25 @@ function handleT($handle,$username){
                     $return['msg'] = '执行数据库任务失败';
                 }
             }
-        }else if($handle == 'old'){
+        }else if($handle == 'old'){//设置被分享用户的骚操作
+            $share = isset($_POST['Share'])?$_POST['Share']:null;
+            if($share){//uuid存在的情况下
+                $sql = "SELECT * FROM `share` WHERE `uuid` = '$share'";
+                if(($response = $conn->query($sql)->fetch_assoc())!=null){//确保记录存在
+                    //确保领取人不是自己
+                    $Dusername = $response['username'];//取出uuid对应的用户的用户名
+                    if($Dusername != $username){
 
+                    }else{
+                        //如果是自己领取
+                        $return['msg'] = '领取人不能是自己';
+                    }
+                }else{//如果没有这个uuid
+                    $return['msg'] = '没有这个邀请码';
+                }
+            }else{//如果没有给出分享着uuid
+               $return['msg'] = '没有邀请码';
+            }
         }
     }else{
         $return['msg'] = '用户不存在';

@@ -1,3 +1,9 @@
+<?php
+$uuid = isset($_GET['uuid'])?$_GET['uuid']:0;
+require_once ('cron/dbs.class.php');
+$conn = new DBS();
+$sql = "SELECT `username` FROM `share` WHERE `uuid`=$uuid";
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -79,7 +85,7 @@
 </div>
 <div id="foot">
     <div id="foot-text">
-        <span>1.输入安网云登录用户名即可获得${分享者用户名}送给你的现金红包！</span><br>
+        <span>1.输入安网云登录用户名即可获得${用户名}送给你的现金红包！</span><br>
         <span>2.领取后现金红包将存入你的安网云账户预存款</span><br>
         <span>3.禁止代理IP、刷注册等作弊行为，安网云不定期进行人工检查。</span><br>
         <span>4.作弊者将直接禁封账户以及账户下所有产品不予退款。</span><br>
@@ -99,17 +105,18 @@
             layer.msg("用户名不许为空呦~");
         }else{
             $.ajax({
-                url: "",
+                url: "api.php",
                 type: "post",
                 data: {
                     User: val,
                     Type:"old",
-                    Share:${分享者UUID}
+                    Share:<?php echo $uuid; ?>
                 },
                 success: function(data) {
-                    if (data.code = 0) {
-                        layer.msg(data.msg);
-                    } else if (data.code = 1) {
+                    var response = JSON.parse(data);
+                    if (response['code'] == 0) {
+                        layer.msg(response['msg']);
+                    } else if (response['code'] == 1) {
                         layer.open({
                             title: '领取成功！',
                             content: '您的红包将直接发送至您的账户！请注意查收！<br/>另外，你也想要免费发红包吗？',

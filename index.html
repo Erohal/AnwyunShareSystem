@@ -125,6 +125,7 @@
 						}else if(response['code'] == 1){
 							$("#linkIin").show();
 							$("#link").val(response['msg']);
+							layer.msg('生成成功了~~');
 						}
 					},
 					error:function(data){
