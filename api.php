@@ -11,20 +11,6 @@ $return = array(
     ,'msg' => '内部错误'
 );
 require_once ('cron/dbs.class.php');
-function getIp()//获取用户的IP地址，也有可能是unknown
-{
-    if (getenv("HTTP_CLIENT_IP") && strcasecmp(getenv("HTTP_CLIENT_IP"), "unknown"))
-        $ip = getenv("HTTP_CLIENT_IP");
-    else if (getenv("HTTP_X_FORWARDED_FOR") && strcasecmp(getenv("HTTP_X_FORWARDED_FOR"), "unknown"))
-        $ip = getenv("HTTP_X_FORWARDED_FOR");
-    else if (getenv("REMOTE_ADDR") && strcasecmp(getenv("REMOTE_ADDR"), "unknown"))
-        $ip = getenv("REMOTE_ADDR");
-    else if (isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] && strcasecmp($_SERVER['REMOTE_ADDR'], "unknown"))
-        $ip = $_SERVER['REMOTE_ADDR'];
-    else
-        $ip = "unknown";
-    return $ip;
-}
 function handleT($handle,$username){
     global $return;//使用到了$return全局变量
     $uid = null;
@@ -33,8 +19,21 @@ function handleT($handle,$username){
     if(($response = $conn->query($sql))!=null){//用户存在的情况下
         $uid = $response->fetch_assoc()['uid'];
         $uuid = $uid * 2019 - 5;//处理得到uuid
-        if($handle == 'new'){
-
+        if($handle == 'new'){//添加邀请链接操作
+            $sql = "SELECT * FROM `share` WHERE username='$username'";
+            if(($share = $conn->query($sql))!=null){//用户已经生成红包
+                $return['msg'] = '你已经生成了分享链接';
+            }else{//用户第一次操作
+                //写数据库操作
+                $sql = "INSERT INTO `share`(`uid`, `username`, `uuid`, `successn`) VALUES ($uid,'$username',$uuid,0)";
+                if($conn->query($sql)){//如果sql命令执行成功
+                    $url=dirname('http://'.$_SERVER['SERVER_NAME'].$_SERVER["REQUEST_URI"]);
+                    $return['code'] = 1;
+                    $return['msg'] = $url . '/good.php?uuid=' . $uuid;//返回生成好的地址
+                }else{//执行失败的话
+                    $return['msg'] = '执行数据库任务失败';
+                }
+            }
         }else if($handle == 'old'){
 
         }
@@ -43,7 +42,7 @@ function handleT($handle,$username){
     }
 }
 $username = isset($_POST['username'])?$_POST['username']:null;
-$handle = isset($_POST['handle'])?$_POST['handle']:null;
+$handle = isset($_POST['type'])?$_POST['type']:null;
 if($username && $handle){
     if($handle == 'new' && $handle == 'old'){
         handleT($handle,$username);
