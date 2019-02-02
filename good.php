@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>安网云领取红包</title>
+    <title>领取红包-安网云</title>
     <script src="layui/layui.all.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/jquery-1.8.3.min.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href="layui/css/layui.css" />
@@ -45,12 +45,25 @@
             margin: 0 auto;
             margin-top: 50px;
         }
-
         #foot-text {
             width: 580px;
             height: 300px;
             margin-left: 20%;
             color: #B3B3B3;
+        }
+        #queryBut{
+            width: 222px;
+            margin: 0 auto;
+            margin-top: 30px;
+        }
+        #queryBut a{
+            width: 220px;
+            border-radius: 10px 10px 10px 10px;
+            box-shadow: 2px 1px 20px #B3B3B3;
+            transform: all 1s initial;
+        }
+        #queryBut a:hover{
+            box-shadow: 0px 0px 0px #B3B3B3;
         }
     </style>
 </head>
@@ -61,12 +74,15 @@
         <button id="scbut" type="button" class="layui-btn layui-btn-normal ">领取</button>
     </div>
 </div>
+<div id="queryBut">
+    <a href="index.html" class="layui-btn layui-btn-lg layui-btn-radius layui-btn-normal">我也要免费发红包</a>
+</div>
 <div id="foot">
     <div id="foot-text">
         <span>1.输入安网云登录用户名即可获得${分享者用户名}送给你的现金红包！</span><br>
         <span>2.领取后现金红包将存入你的安网云账户预存款</span><br>
         <span>3.禁止代理IP、刷注册等作弊行为，安网云不定期进行人工检查。</span><br>
-        <span>4.作弊者将直接禁封账户以及账户下所有产品并不予退款。</span><br>
+        <span>4.作弊者将直接禁封账户以及账户下所有产品不予退款。</span><br>
         <span>5.本活动解释权归安网云所有</span>
     </div>
 </div>
@@ -83,7 +99,7 @@
             layer.msg("用户名不许为空呦~");
         }else{
             $.ajax({
-                url: "api.php",
+                url: "",
                 type: "post",
                 data: {
                     User: val,
@@ -98,7 +114,6 @@
                             content: '您的红包将直接发送至您的账户！请注意查收！<br/>另外，你也想要免费发红包吗？',
                             btn:['是','否'],
                             yes: function(){
-                                alert("是");
                                 window.location.href="index.html";
                                 layer.closeAll();
                             },
@@ -112,4 +127,5 @@
         }
     })
 </script>
+
 </html>
