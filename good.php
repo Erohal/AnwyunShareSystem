@@ -1,8 +1,17 @@
 <?php
-$uuid = isset($_GET['uuid'])?$_GET['uuid']:0;
+$uuid = isset($_GET['uuid'])?$_GET['uuid']:null;
 require_once ('cron/dbs.class.php');
 $conn = new DBS();
-$sql = "SELECT `username` FROM `share` WHERE `uuid`=$uuid";
+if($uuid){
+    $sql = "SELECT `username` FROM `share` WHERE `uuid`=$uuid";
+    if(($response = $conn->query($sql)->fetch_assoc())!=null){
+        $Dusername = $response['username'];
+    }else{
+        //用户不存在,我还不知道怎么操作
+    }
+}else{
+    $uuid = '0000';
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -85,7 +94,7 @@ $sql = "SELECT `username` FROM `share` WHERE `uuid`=$uuid";
 </div>
 <div id="foot">
     <div id="foot-text">
-        <span>1.输入安网云登录用户名即可获得${用户名}送给你的现金红包！</span><br>
+        <span>1.输入安网云登录用户名即可获得<?php echo $Dusername; ?>送给你的现金红包！</span><br>
         <span>2.领取后现金红包将存入你的安网云账户预存款</span><br>
         <span>3.禁止代理IP、刷注册等作弊行为，安网云不定期进行人工检查。</span><br>
         <span>4.作弊者将直接禁封账户以及账户下所有产品不予退款。</span><br>
@@ -94,6 +103,7 @@ $sql = "SELECT `username` FROM `share` WHERE `uuid`=$uuid";
 </div>
 </body>
 <script>
+    <?php echo "var uuid = $uuid";?>
     ;
     ! function() {
         var form = layui.form,

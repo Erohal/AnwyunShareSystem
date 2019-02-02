@@ -142,13 +142,14 @@
 						Type:Type
 					},
 					success:function(data){
-						if(data.code=0){
-							layer.msg(data.msg);
-						}else if(data.code=1){
+					    var response = JSON.parse(data);
+						if(response['code'] == 0){
+							layer.msg(response['msg']);
+						}else if(response['code'] ==1){
 							$("#queryBut").show();
 							$("#sj").show();
-							$("#fxsj").html(data.fxsj);
-							$("#jfsj").html(data.jfsj);
+							$("#fxsj").html(response['fxsj']);
+							$("#jfsj").html(response['jfsj']);
 						}
 					},
 					error:function(data){
