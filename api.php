@@ -27,7 +27,7 @@ function handleT($handle,$username){
                 //写数据库操作
                 $sql = "INSERT INTO `share`(`uid`, `username`, `uuid`, `successn`) VALUES ($uid,'$username',$uuid,0)";
                 if($conn->query($sql)){//如果sql命令执行成功
-                    $url=dirname('http://'.$_SERVER['SERVER_NAME'].$_SERVER["REQUEST_URI"]);
+                    $url=dirname('http://'.$_SERVER['SERVER_NAME'].$_SERVER["REQUEST_URI"]);//这里可能会出错，到时候再来调试
                     $return['code'] = 1;
                     $return['msg'] = $url . '/good.php?uuid=' . $uuid;//返回生成好的地址
                 }else{//执行失败的话

@@ -119,11 +119,12 @@
 						Type:Type
 					},
 					success:function(data){
-						if(data.code=0){
-							layer.msg(data.msg);
-						}else if(data.code=1){
+					    var response = JSON.parse(data);
+						if(response['code'] == 0){
+							layer.msg(response['msg']);
+						}else if(response['code'] == 1){
 							$("#linkIin").show();
-							$("#link").val(data.msg);
+							$("#link").val(response['msg']);
 						}
 					},
 					error:function(data){
