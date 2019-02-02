@@ -2,15 +2,13 @@
 $uuid = isset($_GET['uuid'])?$_GET['uuid']:null;
 require_once ('cron/dbs.class.php');
 $conn = new DBS();
-if($uuid){
-    $sql = "SELECT `username` FROM `share` WHERE `uuid`=$uuid";
-    if(($response = $conn->query($sql)->fetch_assoc())!=null){
-        $Dusername = $response['username'];
-    }else{
-        //用户不存在,我还不知道怎么操作
-    }
+$sql = "SELECT `username` FROM `share` WHERE `uuid`=$uuid";
+if(($uuid && $response = $conn->query($sql)->fetch_assoc())!=null){
+    $Dusername = $response['username'];
 }else{
+    //骚操作开始
     $uuid = '0000';
+    $Dusername = ' 没人会送你 ';
 }
 ?>
 <!DOCTYPE html>

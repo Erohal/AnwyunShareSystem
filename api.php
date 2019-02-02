@@ -42,16 +42,25 @@ function handleT($handle,$username){
                     //确保领取人不是自己
                     $Dusername = $response['username'];//取出uuid对应的用户的用户名
                     if($Dusername != $username){
-
+                        $Dsuccessn = $response['successn'] + 1;
+                        //开始一波骚操作
+                        $addP = "UPDATE `share` SET `successn` = $Dsuccessn WHERE `uuid` = $share";
+                        $addM = "UPDATE `用户` SET `预存款` = 5 WHERE `用户名` = '$username'";
+                        if($conn->query($addP) && $conn->query($addM)){//积分+100成功 并且 被邀请人加款成功
+                            $return['code'] = 1;
+                            $return['msg'] = '领取成功';
+                        }else{//数据库执行失败
+                            $return['msg'] = '数据库错误 code:0x00';
+                        }
                     }else{
                         //如果是自己领取
                         $return['msg'] = '领取人不能是自己';
                     }
                 }else{//如果没有这个uuid
-                    $return['msg'] = '没有这个邀请码';
+                    $return['msg'] = '邀请码错误 code:0x00';
                 }
             }else{//如果没有给出分享着uuid
-               $return['msg'] = '没有邀请码';
+               $return['msg'] = '邀请码错误 code:0x01';
             }
         }
     }else{
