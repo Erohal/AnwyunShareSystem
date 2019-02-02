@@ -103,7 +103,8 @@
 					type: "post",
 					data: {
 						User: val,
-						Type:"old"
+						Type:"old",
+						Share:${分享者UUID}
 					},
 					success: function(data) {
 						if (data.code = 0) {
@@ -127,5 +128,4 @@
 			}
 		})
 	</script>
-	
 </html>
