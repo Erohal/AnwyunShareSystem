@@ -23,7 +23,29 @@
 				background: #fff;
 				line-height: 100px;
 			}
-			
+			#sj {
+				width: 300px;
+				height: 50px;
+				margin: 0 auto;
+				margin-top: 30px;
+				border-radius: 10px;
+				box-shadow: 2px 1px 20px #B3B3B3;
+			}
+			#g{
+				color: #B3B3B3;
+				margin-left: 10px;
+				margin-right: 10px;
+			}
+			#sj-sec {
+				width: 232px;
+				height: 50px;
+				margin: 0 auto;
+				background: #fff;
+				line-height: 50px;
+				font-size: 15px;
+				color: #A6A6A6;
+				text-align: center;
+			}
 			#sec-sec button {
 				width: 70px;
 				display: inline-block;
@@ -77,19 +99,20 @@
 		<div id="sec">
 			<div id="sec-sec">
 				<input type="text" name="userName"  required lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
-				<button id="scbut" type="button" class="layui-btn layui-btn-normal " onclick="cli('new');">生成</button>
+				<button id="scbut" type="button" class="layui-btn layui-btn-normal " onclick="cli('query');">查询</button>
 			</div>
 		</div>
-		<div id="queryBut">
-			<!-- <button type="button" class="layui-btn layui-btn-lg layui-btn-radius layui-btn-normal" onclick="cli('query');">查看我的红包</button> -->
-			<a href="query.html" class="layui-btn layui-btn-lg layui-btn-radius layui-btn-normal">查看我的红包</a>
+		<div id="sj" hidden="hidden">
+			<div id="sj-sec">
+				<span>成功分享:</span><span id="fxsj">10</span><span id="g">|</span><span>当前积分:</span><span id="jfsj">1000</span>
+			</div>
 		</div>
-		<div id="linkIin" hidden="hidden">
-			<input type="text" name="link" id="link" value="" class="layui-input"/>
+		<div id="queryBut" hidden="hidden">
+			 <button type="button" class="layui-btn layui-btn-lg layui-btn-radius layui-btn-normal" onclick="cli('change');">兑换我的积分</button>
 		</div>
 		<div id="foot">
 			<div id="foot-text">
-				<span>1.输入安网云登录用户名生成红包链接</span><br>
+				<span>1.输入生成红包时所使用的用户名即可查询红包数据</span><br>
 				<span>2.每分享成功则分享方得100积分，被分享方获得与[美国入门型主机]等价预存款</span><br>
 				<span>3.满500积分可提交兑换，兑换成功将按照100积分等于人民币1元折算为安网云预存款直接存入账户</span><br>
 				<span>4.被分享方注册安网云后通过分享方链接领取奖励视为分享成功</span><br>
@@ -122,8 +145,10 @@
 						if(data.code=0){
 							layer.msg(data.msg);
 						}else if(data.code=1){
-							$("#linkIin").show();
-							$("#link").val(data.msg);
+							$("#queryBut").show();
+							$("#sj").show();
+							$("#fxsj").html(data.fxsj);
+							$("#jfsj").html(data.jfsj);
 						}
 					},
 					error:function(data){
