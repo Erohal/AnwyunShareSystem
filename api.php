@@ -6,6 +6,10 @@
  * Time: 19:22
  * 安网云分享接口
  */
+$return = array(
+    'code' => 0
+    ,'msg' => '内部错误'
+);
 require_once ('cron/dbs.class.php');
 function getIp()//获取用户的IP地址，也有可能是unknown
 {
@@ -19,41 +23,35 @@ function getIp()//获取用户的IP地址，也有可能是unknown
         $ip = $_SERVER['REMOTE_ADDR'];
     else
         $ip = "unknown";
-
     return $ip;
 }
-function newT($username){//添加一个分享链接
+function handleT($handle,$username){
+    global $return;//使用到了$return全局变量
+    $uid = null;
     $conn = new DBS();
     $sql = "SELECT uid FROM `用户` WHERE `用户名` = '$username'";
-if(($respose = $conn->query($sql))!=null){
-    $uid = $respose->fetch_assoc()['uid'];
-}
-    $uuid = $uid * 2019 - 5;//用户唯一推广链接uuid
-    $sql = "";
-}
-function oldT($username){//这边不知道是干嘛的.....
-    $conn = new DBS();
-    $sql = "SELECT uid FROM `用户` WHERE `用户名` = '$username'";
-    $conn->query($sql);
-}
-$return = array(
-    'code' => 1,
-    'msg' => '内部错误'
-);
-if(!($handle = isset($_POST['handle'])?$_POST['handle']:null) && !($handle = isset($_GET['handle'])?$_GET['handle']:null)){
-    $return['msg'] = '没有选择任何操作';
-}else{
-    if(!($$username = isset($_POST['$username'])?$_POST['$username']:null) && !($$username = isset($_GET['$username'])?$_GET['$username']:null)){
-        $return['msg'] = '用户ID信息丢失';
-    }else{
+    if(($response = $conn->query($sql))!=null){//用户存在的情况下
+        $uid = $response->fetch_assoc()['uid'];
+        $uuid = $uid * 2019 - 5;//处理得到uuid
         if($handle == 'new'){
-            newT($username);
+
         }else if($handle == 'old'){
-            oldT($username);
-        }else{
-            $return['msg'] = '未知的操作类型';
+
         }
+    }else{
+        $return['msg'] = '用户不存在';
     }
+}
+$username = isset($_POST['username'])?$_POST['username']:null;
+$handle = isset($_POST['handle'])?$_POST['handle']:null;
+if($username && $handle){
+    if($handle == 'new' && $handle == 'old'){
+        handleT($handle,$username);
+    }else{
+        $return['msg'] = '参数名称不正确';
+    }
+}else{
+    $return['msg'] = '没有传入参数';
 }
 $return = json_encode($return);
 echo $return;
