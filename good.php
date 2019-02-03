@@ -143,7 +143,6 @@ if(($uuid && $response = $conn->query($sql)->fetch_assoc())!=null){
                             btn:['是','否'],
                             yes: function(){
                                 window.location.href="index.html";
-                                layer.closeAll();
                             },
                         });
                     }

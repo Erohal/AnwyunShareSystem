@@ -11,12 +11,39 @@ $return = array(
     ,'msg' => '内部错误'
 );
 require_once ('cron/dbs.class.php');
+function isAccept($username,$log){//判断某用户是否已经领取过红包 返回true即是可领取
+    //数据储存格式  用户|用户|用户|
+    //开头没有| 以|结尾 我需要share表中log
+    $return = true;
+    $charline = null;
+    for($i = 0 ; $i < strlen($log) ; $i++){
+        if($log[$i] == '|'){
+            if($charline == $username){//用户已经领取
+                $return = false;
+                break;
+            }else{
+                $charline = '';
+            }
+        }else{
+            $charline .= $log[$i];
+        }
+    }
+    return $return;
+}
+function registerTimeAcceptable($Utime,$Dtime){//Utime为邀请人注册时间,Dtine为被邀请人注册时间，要求Dtime > Utime
+    $return = false;
+    if($Dtime > $Utime){
+        $return = true;
+    }
+    return $return;
+}
 function handleT($handle,$username){
     global $return;//使用到了$return全局变量
     $uid = null;
     $conn = new DBS();
     $sql = "SELECT * FROM `用户` WHERE `用户名` = '$username'";
     if(($response = $conn->query($sql)->fetch_assoc())!=null){//用户存在的情况下
+        $Dtime = $response['注册时间'];
         $uid = $response['uid'];
         $uuid = $uid * 2019 - 5;//处理得到uuid
         if($handle == 'new'){//添加邀请链接操作
@@ -25,7 +52,7 @@ function handleT($handle,$username){
                 $return['msg'] = '你已经生成了分享链接';
             }else{//用户第一次操作
                 //写数据库操作
-                $sql = "INSERT INTO `share`(`uid`, `username`, `uuid`, `successn`,`mtime`) VALUES ($uid,'$username',$uuid,0,now())";
+                $sql = "INSERT INTO `share`(`uid`, `username`, `uuid`, `successn`,`mtime`,`log`) VALUES ($uid,'$username',$uuid,0,now(),'')";
                 if($conn->query($sql)){//如果sql命令执行成功
                     $url=dirname('http://'.$_SERVER['SERVER_NAME'].$_SERVER["REQUEST_URI"]);//这里可能会出错，到时候再来调试
                     $return['code'] = 1;
@@ -39,22 +66,35 @@ function handleT($handle,$username){
             if($share){//uuid存在的情况下
                 $sql = "SELECT * FROM `share` WHERE `uuid` = '$share'";
                 if(($response = $conn->query($sql)->fetch_assoc())!=null){//确保记录存在
+                    $Utime = $response['mtime'];
                     //确保领取人不是自己
-                    $Dusername = $response['username'];//取出uuid对应的用户的用户名
-                    if($Dusername != $username){
-                        $Dsuccessn = $response['successn'] + 1;
-                        //开始一波骚操作
-                        $addP = "UPDATE `share` SET `successn` = $Dsuccessn WHERE `uuid` = $share";
-                        $addM = "UPDATE `用户` SET `预存款` = 5 WHERE `用户名` = '$username'";
-                        if($conn->query($addP) && $conn->query($addM)){//积分+100成功 并且 被邀请人加款成功
-                            $return['code'] = 1;
-                            $return['msg'] = '领取成功';
-                        }else{//数据库执行失败
-                            $return['msg'] = '数据库错误 code:0x00';
+                    if(isAccept($username,$response['log'])){//判断是否已经领取过了
+                        if(registerTimeAcceptable($Utime,$Dtime)){
+                            $Dusername = $response['username'];//取出uuid对应的用户的用户名
+                            $selectMoney = "SELECT `预存款` FROM `用户` WHERE `用户名` = '$username'";//小心被邀请人已经充值再领红包的情况
+                            $Dmoney = $conn->query($selectMoney)->fetch_assoc()['预存款'];//取出存款
+                            if($Dusername != $username){
+                                //开始一波骚操作
+                                $Dsuccessn = $response['successn'] + 1;
+                                $Dmoney += 5;
+                                $newLog = $response['log'].$username.'|';
+                                $addP = "UPDATE `share` SET `successn` = $Dsuccessn ,`log` = '$newLog' WHERE `uuid` = $share";
+                                $addM = "UPDATE `用户` SET `预存款` = $Dmoney WHERE `用户名` = '$username'";
+                                if($conn->query($addP) && $conn->query($addM)){//积分+100成功 并且 被邀请人加款成功
+                                    $return['code'] = 1;
+                                    $return['msg'] = '领取成功';
+                                }else{//数据库执行失败
+                                    $return['msg'] = '数据库错误 code:0x00';
+                                }
+                            }else{
+                            $return['msg'] = '领取人不能是自己';
+                            }
+                        }else{
+                            //如果是自己领取
+                            $return['msg'] = '用户身份信息不符合要求';
                         }
                     }else{
-                        //如果是自己领取
-                        $return['msg'] = '领取人不能是自己';
+                        $return['msg'] = '你已经领取过了哦~';
                     }
                 }else{//如果没有这个uuid
                     $return['msg'] = '邀请码错误 code:0x00';
