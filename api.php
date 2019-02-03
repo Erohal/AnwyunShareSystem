@@ -25,7 +25,7 @@ function handleT($handle,$username){
                 $return['msg'] = '你已经生成了分享链接';
             }else{//用户第一次操作
                 //写数据库操作
-                $sql = "INSERT INTO `share`(`uid`, `username`, `uuid`, `successn`,`mtime`) VALUES ($uid,'$username',$uuid,0,now())";
+                $sql = "INSERT INTO `share`(`uid`, `username`, `uuid`, `successn`,`mtime`,`log`) VALUES ($uid,'$username',$uuid,0,now(),'')";
                 if($conn->query($sql)){//如果sql命令执行成功
                     $url=dirname('http://'.$_SERVER['SERVER_NAME'].$_SERVER["REQUEST_URI"]);//这里可能会出错，到时候再来调试
                     $return['code'] = 1;
@@ -41,20 +41,26 @@ function handleT($handle,$username){
                 if(($response = $conn->query($sql)->fetch_assoc())!=null){//确保记录存在
                     //确保领取人不是自己
                     $Dusername = $response['username'];//取出uuid对应的用户的用户名
-                    if($Dusername != $username){
-                        $Dsuccessn = $response['successn'] + 1;
-                        //开始一波骚操作
-                        $addP = "UPDATE `share` SET `successn` = $Dsuccessn WHERE `uuid` = $share";
-                        $addM = "UPDATE `用户` SET `预存款` = 5 WHERE `用户名` = '$username'";
-                        if($conn->query($addP) && $conn->query($addM)){//积分+100成功 并且 被邀请人加款成功
-                            $return['code'] = 1;
-                            $return['msg'] = '领取成功';
-                        }else{//数据库执行失败
-                            $return['msg'] = '数据库错误 code:0x00';
+                    $selectMoney = "SELECT `预存款` FROM `用户` WHERE `用户名` = '$username'";//小心被邀请人已经充值再领红包的情况
+                    if(($Dmoney = $conn->query($selectMoney)->fetch_assoc()['预存款']) != null){//判断用户是否存在，并且取出存款
+                        if($Dusername != $username){
+                            $Dsuccessn = $response['successn'] + 1;
+                            //开始一波骚操作
+                            $Dmoney += 5;
+                            $addP = "UPDATE `share` SET `successn` = $Dsuccessn WHERE `uuid` = $share";
+                            $addM = "UPDATE `用户` SET `预存款` = $Dmoney WHERE `用户名` = '$username'";
+                            if($conn->query($addP) && $conn->query($addM)){//积分+100成功 并且 被邀请人加款成功
+                                $return['code'] = 1;
+                                $return['msg'] = '领取成功';
+                            }else{//数据库执行失败
+                                $return['msg'] = '数据库错误 code:0x00';
+                            }
+                        }else{
+                            //如果是自己领取
+                            $return['msg'] = '领取人不能是自己';
                         }
-                    }else{
-                        //如果是自己领取
-                        $return['msg'] = '领取人不能是自己';
+                    }else{//用户不存在呢...
+
                     }
                 }else{//如果没有这个uuid
                     $return['msg'] = '邀请码错误 code:0x00';
