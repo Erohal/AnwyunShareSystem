@@ -29,7 +29,7 @@ if(($uuid && $response = $conn->query($sql)->fetch_assoc())!=null){
             width: 300px;
             height: 100px;
             margin: 0 auto;
-            margin-top: 15%;
+            margin-top: 30px;
             border-radius: 10px;
             box-shadow: 2px 1px 20px #B3B3B3;
         }
@@ -123,6 +123,18 @@ if(($uuid && $response = $conn->query($sql)->fetch_assoc())!=null){
         var form = layui.form,
             layer = layui.layer;
     };
+	$(document).ready(
+		function(){
+			layer.open({
+			    title: '领取说明！',
+			    content: '领取红包需要先在安网云注册账户呦~<br/>你要现在注册吗？',
+			    btn:['是','否'],
+			    yes: function(){
+			        window.location.href="https://www.anwyun.com/index.php/index/register/";
+			    },
+			});
+		}
+	)
     $("#scbut").click(function() {
         var val = $("input[name='userName']").val();
         if (val == "") {

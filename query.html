@@ -15,7 +15,7 @@
 				border-radius: 10px;
 				box-shadow: 2px 1px 20px #B3B3B3;
 			}
-			
+
 			#sec-sec {
 				width: 232px;
 				height: 100px;
@@ -23,6 +23,7 @@
 				background: #fff;
 				line-height: 100px;
 			}
+
 			#sj {
 				width: 300px;
 				height: 50px;
@@ -31,11 +32,13 @@
 				border-radius: 10px;
 				box-shadow: 2px 1px 20px #B3B3B3;
 			}
-			#g{
+
+			#g {
 				color: #B3B3B3;
 				margin-left: 10px;
 				margin-right: 10px;
 			}
+
 			#sj-sec {
 				width: 232px;
 				height: 50px;
@@ -46,6 +49,7 @@
 				color: #A6A6A6;
 				text-align: center;
 			}
+
 			#sec-sec button {
 				width: 70px;
 				display: inline-block;
@@ -53,44 +57,51 @@
 				margin-left: -5px;
 				margin-top: -3px;
 			}
-			
+
 			#sec input[name='userName'] {
 				width: 150px;
 				display: inline-block;
 				border-radius: 10px 0 0 10px;
 			}
-			#foot{
+
+			#foot {
 				width: 750px;
 				height: 300px;
 				margin: 0 auto;
 				margin-top: 50px;
 			}
-			#foot-text{
+
+			#foot-text {
 				width: 620px;
 				height: 300px;
 				margin: 0 auto;
 				color: #B3B3B3;
 			}
-			#queryBut{
+
+			#queryBut {
 				width: 222px;
 				margin: 0 auto;
 				margin-top: 30px;
 			}
-			#queryBut button{
+
+			#queryBut button {
 				width: 220px;
 				border-radius: 10px 10px 10px 10px;
 				box-shadow: 2px 1px 20px #B3B3B3;
 				transform: all 1s initial;
 			}
-			#queryBut button:hover{
+
+			#queryBut button:hover {
 				box-shadow: 0px 0px 0px #B3B3B3;
 			}
-			#linkIin{
+
+			#linkIin {
 				width: 300px;
 				margin: 0 auto;
 				margin-top: 30px;
 			}
-			#linkIin #link{
+
+			#linkIin #link {
 				width: 300px;
 			}
 		</style>
@@ -98,7 +109,7 @@
 	<body bgcolor="">
 		<div id="sec">
 			<div id="sec-sec">
-				<input type="text" name="userName"  required lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+				<input type="text" name="userName" required lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
 				<button id="scbut" type="button" class="layui-btn layui-btn-normal " onclick="cli('query');">查询</button>
 			</div>
 		</div>
@@ -108,7 +119,7 @@
 			</div>
 		</div>
 		<div id="queryBut" hidden="hidden">
-			 <button type="button" class="layui-btn layui-btn-lg layui-btn-radius layui-btn-normal" onclick="cli('change');">兑换我的积分</button>
+			<button type="button" class="layui-btn layui-btn-lg layui-btn-radius layui-btn-normal" onclick="cli('change');">兑换我的积分</button>
 		</div>
 		<div id="foot">
 			<div id="foot-text">
@@ -128,25 +139,26 @@
 			var form = layui.form,
 				layer = layui.layer;
 		};
-		function cli(Type){
-			var val=$("input[name='userName']").val();
-			if(val==""){
+
+		function cli(Type) {
+			var val = $("input[name='userName']").val();
+			if (val == "") {
 				layer.msg("用户名不许为空呦~");
-			}else{
+			} else {
 				$.ajax({
-					url:"api.php",
-					type:"post",
-					data:{
-						User:val,
-						Type:Type
+					url: "api.php",
+					type: "post",
+					data: {
+						User: val,
+						Type: Type
 					},
-					success:function(data){
-					    var response = JSON.parse(data);
-						if(response['code'] == 0){
+					success: function(data) {
+						var response = JSON.parse(data);
+						if (response['code'] == 0) {
 							layer.msg(response['msg']);
 							$("#queryBut").hide();
 							$("#sj").hide();
-						}else if(response['code'] ==1){
+						} else if (response['code'] == 1) {
 							$("#queryBut").show();
 							$("#sj").show();
 							$("#fxsj").html(response['fxsj']);
@@ -154,14 +166,14 @@
 							layer.msg(response['msg']);
 						}
 					},
-					error:function(data){
+					error: function(data) {
 						layer.msg("网络错误！");
 						$("#queryBut").hide();
 						$("#sj").hide();
 					},
-				 })
+				})
 			}
 		}
 	</script>
-	
+
 </html>

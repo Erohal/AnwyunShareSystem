@@ -49,7 +49,9 @@ function handleT($handle,$username){
         if($handle == 'new'){//添加邀请链接操作
             $sql = "SELECT * FROM `share` WHERE username='$username'";
             if(($share = $conn->query($sql)->fetch_assoc())!=null){//用户已经生成红包
-                $return['msg'] = '你已经生成了分享链接';
+				$return['code'] = 1;
+				$url=dirname('http://'.$_SERVER['SERVER_NAME'].$_SERVER["REQUEST_URI"]);
+                $return['msg'] = $url . '/good.php?uuid='.$share[uuid];
             }else{//用户第一次操作
                 //写数据库操作
                 $sql = "INSERT INTO `share`(`uid`, `username`, `uuid`, `successn`,`mtime`,`log`) VALUES ($uid,'$username',$uuid,0,now(),'')";
