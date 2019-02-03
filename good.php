@@ -7,7 +7,7 @@ $text='';
 $textTwo='';
 if(($uuid && $response = $conn->query($sql)->fetch_assoc())!=null){
     $Dusername = $response['username'];
-	$text='这是一个来自'.$Dusername.'的现金红包！'
+	$text='这是一个来自'.$Dusername.'的现金红包！';
 	$textTwo='1.输入安网云登录用户名即可获得'.$Dusername.'送给你的现金红包！';
 }else{
     //骚操作开始
