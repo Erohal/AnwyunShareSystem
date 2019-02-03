@@ -102,6 +102,17 @@ function handleT($handle,$username){
             }else{//如果没有给出分享着uuid
                $return['msg'] = '邀请码错误 code:0x01';
             }
+        }else if($handle == 'query'){
+            $sql = "SELECT * FROM `share` WHERE `username` = '$username'";
+            if(($response = $conn->query($sql)->fetch_assoc())!=null){
+                $Dsuccess = $response['successn'];
+                $return['code'] =1;
+                $return['msg'] = '获取成功';
+                $return['fxsj'] = $Dsuccess;
+                $return['jfsj'] = $Dsuccess * 100;
+            }else{
+                $return['msg'] = '数据查询失败 请检查用户名是否正确或联系客服';
+            }
         }
     }else{
         $return['msg'] = '用户不存在';
@@ -110,7 +121,7 @@ function handleT($handle,$username){
 $username = isset($_POST['User'])?$_POST['User']:null;
 $handle = isset($_POST['Type'])?$_POST['Type']:null;
 if($username && $handle){
-    if($handle == 'new' || $handle == 'old'){
+    if($handle == 'new' || $handle == 'old' || $handle == 'query'){
         handleT($handle,$username);
     }else{
         $return['msg'] = '参数名称不正确';
