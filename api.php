@@ -113,6 +113,30 @@ function handleT($handle,$username){
             }else{
                 $return['msg'] = '数据查询失败 请检查用户名是否正确或联系客服';
             }
+        }else if($handle = 'change'){//兑换操作
+            $sql = "SELECT * FROM `share` WHERE `username` = '$username'";
+            if(($response = $conn->query($sql)->fetch_assoc())!=null){
+                $Dsuccess = $response['successn'];//用户的积分/100
+                if($Dsuccess >= 5){
+                    $sql = "UPDATE `share` SET `successn` = 0 WHERE `username` = '$username'";//将用户的积分置0
+                    $conn -> query($sql);
+                    $selectMoney = "SELECT `预存款` FROM `用户` WHERE `用户名` = '$username'";
+                    $Dmoney = $conn->query($selectMoney)->fetch_assoc()['预存款'];
+                    $Dmoney += $Dsuccess;
+                    //重新写回去
+                    $addM = "UPDATE `用户` SET `预存款` = $Dmoney WHERE `用户名` = '$username'";
+                    if($conn->query($addM)){
+                        $return['code'] = 1;
+                        $return['msg'] = '兑换成功';
+                    }else{
+                        $return['msg'] = '兑换失败 请联系管理员';
+                    }
+                }else{
+                    $return['msg'] = '您的积分不足500';
+                }
+            }else{
+                $return['msg'] = '数据查询失败 请检查用户名是否正确或联系客服';
+            }
         }
     }else{
         $return['msg'] = '用户不存在';
@@ -121,7 +145,7 @@ function handleT($handle,$username){
 $username = isset($_POST['User'])?$_POST['User']:null;
 $handle = isset($_POST['Type'])?$_POST['Type']:null;
 if($username && $handle){
-    if($handle == 'new' || $handle == 'old' || $handle == 'query'){
+    if($handle == 'new' || $handle == 'old' || $handle == 'query' || $handle='change'){
         handleT($handle,$username);
     }else{
         $return['msg'] = '参数名称不正确';
