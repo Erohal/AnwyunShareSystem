@@ -128,7 +128,6 @@
 			var form = layui.form,
 				layer = layui.layer;
 		};
-		//$("#scbut").click()
 		function cli(Type){
 			var val=$("input[name='userName']").val();
 			if(val==""){
@@ -145,6 +144,8 @@
 					    var response = JSON.parse(data);
 						if(response['code'] == 0){
 							layer.msg(response['msg']);
+							$("#queryBut").hide();
+							$("#sj").hide();
 						}else if(response['code'] ==1){
 							$("#queryBut").show();
 							$("#sj").show();
@@ -154,6 +155,8 @@
 					},
 					error:function(data){
 						layer.msg("网络错误！");
+						$("#queryBut").hide();
+						$("#sj").hide();
 					},
 				 })
 			}

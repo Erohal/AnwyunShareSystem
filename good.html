@@ -11,7 +11,7 @@
 				width: 300px;
 				height: 100px;
 				margin: 0 auto;
-				margin-top: 15%;
+				margin-top: 30px;
 				border-radius: 10px;
 				box-shadow: 2px 1px 20px #B3B3B3;
 			}
@@ -65,9 +65,21 @@
 			#queryBut a:hover{
 				box-shadow: 0px 0px 0px #B3B3B3;
 			}
+			#head{
+				width:100%;
+				margin-top: 15%;
+				text-align: center;
+				font-size: 20px;
+				color:#1E9FFF ;
+			}
 		</style>
 	</head>
 	<body bgcolor="">
+		<div id="head">
+			<span id="title">
+				这是一个来自SomUrim的现金红包！
+			</span>
+		</div>
 		<div id="sec">
 			<div id="sec-sec">
 				<input type="text" name="userName" required lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
@@ -93,6 +105,11 @@
 			var form = layui.form,
 				layer = layui.layer;
 		};
+		$(document).ready(
+			function(){
+				
+			}
+		)
 		$("#scbut").click(function() {
 			var val = $("input[name='userName']").val();
 			if (val == "") {
